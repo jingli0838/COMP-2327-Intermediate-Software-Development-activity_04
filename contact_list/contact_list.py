@@ -65,7 +65,7 @@ class ContactList(QMainWindow):
         """
         row_count = self.contact_table.rowCount()
         if(len(self.contact_name_input.text().strip()) > 0 and
-            len(self.phone_input.text()) > 0):
+            len(self.phone_input.text().strip()) > 0):
             
             self.contact_table.insertRow(row_count)
             contact_name = QTableWidgetItem(self.contact_name_input.text())
@@ -81,7 +81,14 @@ class ContactList(QMainWindow):
 
     @Slot()
     def __on_remove_contact(self):
-        """_summary_
+        """
+        Removes the selected contact from the contact table after user confirmation.
+
+        This method checks if a row is selected in the contact table. If a row is selected, 
+        it displays a confirmation dialog asking the user to confirm the removal. If the user 
+        selects "Yes," the contact is removed, and the status label is updated with a removal 
+        confirmation message. If no row is selected, the status label prompts the user to select 
+        a row to remove.
         """
         selected_row = self.contact_table.currentRow()
         if(selected_row >= 0):

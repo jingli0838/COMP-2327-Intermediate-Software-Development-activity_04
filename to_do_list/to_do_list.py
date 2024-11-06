@@ -1,12 +1,16 @@
+import signal
 from PySide6.QtWidgets import QMainWindow, QLineEdit, QPushButton, QTableWidget, QLabel, QMessageBox, QVBoxLayout, QWidget, QTableWidgetItem, QComboBox
 from PySide6.QtCore import Slot
 from to_do_list.task_editor import TaskEditor
 import csv
 
 class ToDoList(QMainWindow):
+    
     def __init__(self):
         super().__init__()
         self.__initialize_widgets()
+        self.add_button.clicked.connect(self.__on_add_task)
+        self.task_table.cellClicked.connect(self.__on_edit_task)
 
 
     def __initialize_widgets(self):
@@ -46,6 +50,41 @@ class ToDoList(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
+    
+    @Slot()
+    def __on_add_task(self):
+        if(len(self.task_input.text().strip())>0 and
+            len(self.status_combo.currentText()) > 0):
+            row_count = self.task_table.rowCount()
+            self.task_table.insertRow(row_count)
+
+            new_task = QTableWidgetItem(self.task_input.text())
+            new_status = QTableWidgetItem(self.status_combo.currentText())
+
+            self.task_table.setItem(row_count, 0, new_task)
+            self.task_table.setItem(row_count, 1, new_status)
+
+            self.status_label.setText(f'Added task: {new_task.text()}')
+        else:
+            self.status_label.setText("Please enter a task and select its status.")
+
+    @Slot()
+    def __on_edit_task(self):
+        selected_task_row = self.task_table.currentRow()
+        current_status = self.task_table.item(selected_task_row, 1).text()
+        task_editor = TaskEditor(selected_task_row, current_status)
+        task_editor.task_updated.connect(self.__update_task_status)
+        task_editor.exec()
+
+    @Slot()
+    def __update_task_status(self, row:int, new_status:str ):
+
+        status_item = QTableWidgetItem(new_status)
+        self.task_table.setItem(row, 1, status_item)
+     
+        self.status_label.setText(f'Task status updated to: {new_status}')
+
+
 
     # Part 3
     def __load_data(self, file_path: str):
