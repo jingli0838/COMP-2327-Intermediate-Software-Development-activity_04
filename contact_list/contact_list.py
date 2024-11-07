@@ -57,11 +57,6 @@ class ContactList(QMainWindow):
     def __on_add_contact(self):
         """
         Adds a new contact to the contact table if both the contact name and phone number fields are filled.
-
-        This method checks if both the contact name and phone number inputs are non-empty.
-        If valid, it adds a new row to the contact table, populates it with the contact name
-        and phone number, and updates the status label with a success message. If either field
-        is empty, it prompts the user to fill in both fields via the status label.
         """
         row_count = self.contact_table.rowCount()
         if(len(self.contact_name_input.text().strip()) > 0 and
@@ -82,13 +77,7 @@ class ContactList(QMainWindow):
     @Slot()
     def __on_remove_contact(self):
         """
-        Removes the selected contact from the contact table after user confirmation.
-
-        This method checks if a row is selected in the contact table. If a row is selected, 
-        it displays a confirmation dialog asking the user to confirm the removal. If the user 
-        selects "Yes," the contact is removed, and the status label is updated with a removal 
-        confirmation message. If no row is selected, the status label prompts the user to select 
-        a row to remove.
+        Removes the selected contact from the contact table after user confirmation.  
         """
         selected_row = self.contact_table.currentRow()
         if(selected_row >= 0):
